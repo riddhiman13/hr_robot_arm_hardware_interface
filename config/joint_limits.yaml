@@ -1,0 +1,85 @@
+joint_limits:
+  l_shoulder_pitch_joint:
+    has_position_limits: true
+    min_position: -0.4014
+    max_position: 1.9024
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+    has_effort_limits: true
+    max_effort: 5.0
+  l_shoulder_roll_joint:
+    has_position_limits: true
+    min_position: 0
+    max_position: 1.5009
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+    has_effort_limits: true
+    max_effort: 5.0
+  l_shoulder_yaw_joint:
+    has_position_limits: true
+    min_position: -1.0122
+    max_position: 1.0297
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+    has_effort_limits: true
+    max_effort: 5.0
+  l_elbow_pitch_joint:
+    has_position_limits: true
+    min_position: -2.2340
+    max_position: 0
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+    has_effort_limits: true
+    max_effort: 5.0
+  l_wrist_yaw_joint:
+    has_position_limits: true
+    min_position: -3.0543
+    max_position: 0
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+    has_effort_limits: true
+    max_effort: 5.0
+  l_wrist_roll_joint:
+    has_position_limits: true
+    min_position: -0.8726
+    max_position: 0.8552
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+    has_effort_limits: true
+    max_effort: 5.0
+  l_wrist_pitch_joint:
+    has_position_limits: true
+    min_position: -0.3316
+    max_position: 0.4712
+    has_velocity_limits: true
+    max_velocity: 2.0
+    has_acceleration_limits: true
+    max_acceleration: 5.0
+    has_jerk_limits: true
+    max_jerk: 100.0
+    has_effort_limits: true
+    max_effort: 5.0

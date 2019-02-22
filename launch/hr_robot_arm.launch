@@ -1,0 +1,30 @@
+<launch>
+
+    <!-- Robot description -->
+    <param name="robot_description" command="xacro $(find hr_robot_arm_hardware_interface)/urdf/sophia.urdf.xacro --inorder"/>
+
+    <!-- Robot state publisher -->
+    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/>
+
+    <node name="hr_robot_arm_hardware_interface" pkg="hr_robot_arm_hardware_interface" type="hr_robot_arm_hardware_interface_node" output="screen"/>
+
+    <!-- Load controller configuration -->
+    <rosparam command="load" file="$(find hr_robot_arm_hardware_interface)/config/control.yaml" />
+
+    <!-- Load actuator configuration -->
+    <rosparam command="load" file="$(find hr_robot_arm_hardware_interface)/config/actuators.yaml"/>
+
+    <!-- Load joint limits specification -->
+    <!-- <rosparam command="load" file="$(find hr_robot_arm_hardware_interface)/config/joint_limits.yaml"/> -->
+
+    <!-- Spawn controllers -->
+    <!-- <rosparam file="$(find hr_robot_arm_hardware_interface)/config/control.yaml" command="load"/> -->
+    <node name="joint_state_controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+          args="joint_state_controller l_shoulder_pitch_joint_position_controller l_shoulder_roll_joint_position_controller
+           l_shoulder_yaw_joint_position_controller l_elbow_pitch_joint_position_controller 
+           l_wrist_yaw_joint_position_controller l_wrist_roll_joint_position_controller 
+           l_wrist_pitch_joint_position_controller" />
+
+</launch>
+
+

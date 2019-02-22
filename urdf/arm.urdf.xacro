@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find hr_robot_arm_hardware_interface)/urdf/arm.transmission.urdf.xacro" />
+    <!-- <xacro:include filename="$(find hr_robot_arm_hardware_interface)/urdf/arm_property.xacro" /> -->
+    <xacro:macro name="arm" params="prefix reflect">
+        <!-- Joint properties -->
+        <xacro:property name="calibrate" value="${90 * deg_to_rad}"/>
+        <xacro:property name="arm_eps" value="${1.14 * deg_to_rad}" />
+ 
+        <xacro:property name="shoulder_pitch_x" value="${-67 * mm_to_m}"/>
+        <xacro:property name="shoulder_pitch_y" value="${138 * mm_to_m}"/>
+        <xacro:property name="shoulder_pitch_z" value="${466.2 * mm_to_m}"/>
+        <xacro:property name="shoulder_pitch_angle" value="${-6.73 * deg_to_rad}"/>
+        <xacro:property name="shoulder_pitch_min" value="${-23 * deg_to_rad}"/>
+        <xacro:property name="shoulder_pitch_max" value="${109 * deg_to_rad}"/>
+
+        <xacro:property name="shoulder_roll_y" value="${35 * mm_to_m}"/>
+        <xacro:property name="shoulder_roll_angle" value="${6.73 * deg_to_rad}"/>
+        <xacro:property name="shoulder_roll_min" value="0"/>
+        <xacro:property name="shoulder_roll_max" value="${86 * deg_to_rad}"/>
+
+        <xacro:property name="shoulder_yaw_x" value="${104.3 * mm_to_m}"/>
+        <xacro:property name="shoulder_yaw_z" value="${5.2 * mm_to_m}"/>
+        <xacro:property name="shoulder_yaw_min" value="${-58 * deg_to_rad}"/><!-- switch -->
+        <xacro:property name="shoulder_yaw_max" value="${59 * deg_to_rad}"/>
+
+        <xacro:property name="elbow_pitch_x" value="${150.7 * mm_to_m}"/>
+        <xacro:property name="elbow_pitch_z" value="${-3 * mm_to_m}"/>
+        <xacro:property name="elbow_pitch_min" value="${-128 * deg_to_rad}"/><!-- switch -->
+        <xacro:property name="elbow_pitch_max" value="${0 * deg_to_rad}"/>
+
+        <!-- wrist yaw in mechanical drawing -->
+        <xacro:property name="wrist_yaw_x" value="${93.5 * mm_to_m}"/>
+        <xacro:property name="wrist_yaw_z" value="${3.6 * mm_to_m}"/>
+        <xacro:property name="wrist_yaw_min" value="${-175 * deg_to_rad}"/><!-- switch -->
+        <xacro:property name="wrist_yaw_max" value="${0 * deg_to_rad}"/>
+
+        <xacro:property name="wrist_x" value="${136.5 * mm_to_m}"/>
+
+        <xacro:property name="wrist_roll_x" value="${0 * mm_to_m}"/>
+        <xacro:property name="wrist_roll_min" value="${-50 * deg_to_rad}"/><!-- switch -->
+        <xacro:property name="wrist_roll_max" value="${49 * deg_to_rad}"/>
+
+        <xacro:property name="wrist_pitch_x" value="${5 * mm_to_m}"/>
+        <xacro:property name="wrist_pitch_min" value="${-19 * deg_to_rad}"/>
+        <xacro:property name="wrist_pitch_max" value="${27 * deg_to_rad}"/>
+        
+        <!-- Links -->
+        <link name="${prefix}_shoulder_pitch"/>
+        <link name="${prefix}_shoulder_roll"/>
+        <link name="${prefix}_shoulder_yaw"/>
+
+        <link name="${prefix}_elbow_pitch"/>
+        <link name="${prefix}_wrist_yaw"/>
+
+        <!-- Standard REP 120 arm and hand coordinate frame: l_wrist and r_wrist: http://www.ros.org/reps/rep-0120.html#l-wrist-and-r-wrist -->
+        <link name="${prefix}_wrist"/>
+        <link name="${prefix}_wrist_roll"/>
+        <link name="${prefix}_wrist_pitch"/>
+
+
+        <!-- Joints -->
+        <joint name="${prefix}_shoulder_pitch_joint" type="revolute">
+            <parent link="base_link"/>
+            <child link="${prefix}_shoulder_pitch"/>
+            <origin xyz="${shoulder_pitch_x} ${reflect * shoulder_pitch_y} ${shoulder_pitch_z}"
+                    rpy="${shoulder_pitch_angle * reflect} 0 0"/>
+            <axis xyz="0 1 0"/>
+            <!-- Joint limits -->
+            <limit velocity="1.0" effort="10" lower="${shoulder_pitch_min}" upper="${shoulder_pitch_max}"/>
+
+            <!-- Soft limits -->
+            <safety_controller k_position="100" k_velocity="15" soft_lower_limit="${-23 * deg_to_rad}" soft_upper_limit="${109 * deg_to_rad}" /> 
+        </joint>
+
+        <joint name="${prefix}_shoulder_roll_joint" type="revolute">
+            <parent link="${prefix}_shoulder_pitch"/>
+            <child link="${prefix}_shoulder_roll"/>
+            <origin xyz="0 ${reflect * shoulder_roll_y} 0" rpy="${reflect * shoulder_roll_angle} 0 0 "/>
+            <axis xyz="0 0 ${reflect * 1}"/>
+            <!-- Joint limits -->
+            <limit velocity="1.0" effort="10" lower="${shoulder_roll_min}" upper="${shoulder_roll_max}"/>
+            <!-- Soft limits -->
+            <safety_controller k_position="100" k_velocity="15" soft_lower_limit="0" soft_upper_limit="${86 * deg_to_rad}" /> 
+
+        </joint>
+
+        <joint name="${prefix}_shoulder_yaw_joint" type="revolute">
+            <parent link="${prefix}_shoulder_roll"/>
+            <child link="${prefix}_shoulder_yaw"/>
+            <origin xyz="${shoulder_yaw_x} 0 ${shoulder_yaw_z}" rpy="0 0 0"/>
+            <axis xyz="${reflect * 1} 0 0"/>
+            <!-- Joint limits -->
+            <limit velocity="1.0" effort="10" lower="${shoulder_yaw_min}" upper="${shoulder_yaw_max}"/>
+            <!-- Soft limits -->
+            <safety_controller k_position="100" k_velocity="15" soft_lower_limit="${-58 * deg_to_rad}" soft_upper_limit="${59 * deg_to_rad}" /> 
+        </joint>
+
+        <joint name="${prefix}_elbow_pitch_joint" type="revolute">
+            <parent link="${prefix}_shoulder_yaw"/>
+            <child link="${prefix}_elbow_pitch"/>
+            <origin xyz="${elbow_pitch_x} 0 ${elbow_pitch_z}" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+            <!-- Joint limits -->
+            <limit velocity="1.0" effort="10" lower="${elbow_pitch_min}" upper="${elbow_pitch_max}"/>
+            <!-- Soft limits -->
+            <safety_controller k_position="100" k_velocity="15" soft_lower_limit="${-128 * deg_to_rad}" soft_upper_limit="${0 * deg_to_rad}" /> 
+        </joint>
+
+        <joint name="${prefix}_wrist_yaw_joint" type="revolute">
+            <parent link="${prefix}_elbow_pitch"/>
+            <child link="${prefix}_wrist_yaw"/>
+            <origin xyz="${wrist_yaw_x} 0 ${wrist_yaw_z}" rpy="${reflect * calibrate} 0 0"/>
+            <axis xyz="${reflect} 0 0"/>
+            <!-- Joint limits -->
+            <limit velocity="1.0" effort="10" lower="${wrist_yaw_min}" upper="${wrist_yaw_max}"/>
+            <!-- Soft limits -->
+            <safety_controller k_position="100" k_velocity="15" soft_lower_limit="${-175 * deg_to_rad}" soft_upper_limit="${0 * deg_to_rad}" /> 
+        </joint>
+
+        <joint name="${prefix}_wrist_joint" type="fixed">
+            <parent link="${prefix}_wrist_yaw"/>
+            <child link="${prefix}_wrist"/>
+            <origin xyz="${wrist_x} 0 0" rpy="${reflect * calibrate * (-1)} 0 0"/>
+        </joint>
+
+        <joint name="${prefix}_wrist_roll_joint" type="revolute">
+            <parent link="${prefix}_wrist"/>
+            <child link="${prefix}_wrist_roll"/>
+            <origin xyz="${wrist_roll_x} 0 0" rpy="0 0 0"/>
+            <axis xyz="0 1 0"/>
+            <!-- Joint limits -->
+            <limit velocity="1.0" effort="10" lower="${wrist_roll_min}" upper="${wrist_roll_max}"/>
+            <!-- Soft limits -->
+            <safety_controller k_position="100" k_velocity="15" soft_lower_limit="${-50 * deg_to_rad}" soft_upper_limit="${49 * deg_to_rad}" /> 
+        </joint>
+
+        <joint name="${prefix}_wrist_pitch_joint" type="revolute">
+            <parent link="${prefix}_wrist_roll"/>
+            <child link="${prefix}_wrist_pitch"/>
+            <origin xyz="${wrist_pitch_x} 0 0" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <!-- Joint limits -->
+            <limit velocity="1.0" effort="10" lower="${wrist_pitch_min}" upper="${wrist_pitch_max}"/>
+            <!-- Soft limits -->
+            <safety_controller k_position="100" k_velocity="15" soft_lower_limit="${-19 * deg_to_rad}" soft_upper_limit="${27 * deg_to_rad}" /> 
+        </joint>
+
+        <xacro:arm_transmission prefix="${prefix}"/>
+    </xacro:macro>
+</robot>

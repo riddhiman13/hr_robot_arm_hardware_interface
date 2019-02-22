@@ -1,0 +1,35 @@
+actuators:
+    - type        : dynamixel
+      id          : 8
+      model       : MX-106
+      name        : l_shoulder_pitch_motor
+
+    - type        : dynamixel
+      id          : 10
+      model       : MX-106
+      name        : l_shoulder_roll_motor
+
+    - type        : dynamixel
+      id          : 12
+      model       : XM-430-W350
+      name        : l_shoulder_yaw_motor
+
+    - type        : dynamixel
+      id          : 14
+      model       : MX-64
+      name        : l_elbow_pitch_motor
+
+    - type        : dynamixel
+      id          : 16
+      model       : XM-430-W350
+      name        : l_wrist_yaw_motor
+
+    - type        : dynamixel
+      id          : 18
+      model       : XM-430-W350
+      name        : l_wrist_pitch_motor
+
+    - type        : dynamixel
+      id          : 20
+      model       : XM-430-W350
+      name        : l_wrist_roll_motor        

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="sophia">
+    <!-- mechanical drawings are in mm and degrees to its less error prone to convert with a formula -->
+    <xacro:property name="deg_to_rad" value="${pi/180}"/>
+    <xacro:property name="mm_to_m" value="0.001"/>
+
+    <!-- <xacro:include filename="$(find hr_description)/urdf/base.urdf.xacro"/>
+    <xacro:include filename="$(find hr_description)/urdf/torso.urdf.xacro"/> -->
+    <xacro:include filename="$(find hr_robot_arm_hardware_interface)/urdf/arm.urdf.xacro"/>
+  
+
+    <!--&lt;!&ndash; Arms &ndash;&gt;-->
+    <link name="base_link"/>
+    <!-- <link name="waist"/> -->
+    <xacro:arm prefix="l" reflect="1"/>
+
+</robot>

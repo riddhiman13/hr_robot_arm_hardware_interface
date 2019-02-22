@@ -1,0 +1,17 @@
+<!--TODO: delete and replace with ros_control(?) -->
+<!-- Shall all controllers be dealt with here or in the according launch file -->
+<launch>
+    <!-- Robot model -->
+    <param name="robot_description" command="xacro $(find hr_robot_arm_hardware_interface)/urdf/sophia.urdf.xacro --inorder"/>
+
+    <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher">
+        <param name="use_gui" value="true"/>
+    </node>
+
+    <node pkg="robot_state_publisher" type="state_publisher" name="robot_state_publisher"/>
+
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find hr_robot_arm_hardware_interface)/config/config.rviz"/>
+<!-- 
+    <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model robot" />
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"/> -->
+</launch>

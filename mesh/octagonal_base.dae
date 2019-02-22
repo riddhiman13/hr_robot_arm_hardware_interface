@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA xmlns="http://www.collada.org/2005/11/COLLADASchema" version="1.4.1">
+  <asset>
+    <contributor>
+      <author>Blender User</author>
+      <authoring_tool>Blender 2.79.0</authoring_tool>
+    </contributor>
+    <created>2018-09-21T11:25:43</created>
+    <modified>2018-09-21T11:25:43</modified>
+    <unit name="meter" meter="1"/>
+    <up_axis>Z_UP</up_axis>
+  </asset>
+  <library_images/>
+  <library_geometries>
+    <geometry id="Octagonal_Base_001-mesh" name="Octagonal Base.001">
+      <mesh>
+        <source id="Octagonal_Base_001-mesh-positions">
+          <float_array id="Octagonal_Base_001-mesh-positions-array" count="96">-220 -26.98737 -91.12699 -91.12699 26.98761 -220 -91.12699 -26.98737 -220 91.12699 26.98761 -220 91.12699 -26.98737 -220 -151.7375 -26.98737 -76.20001 220 26.98761 -91.12699 220 -26.98737 -91.12699 220 -26.98737 -76.20001 151.7375 -26.98737 -76.20001 -220 -26.98737 -76.20001 -220 26.98761 -91.12699 220 26.98761 -76.20001 -220 26.98761 -76.20001 -151.7375 -26.98737 76.2 -151.7375 26.98761 -76.20001 151.7375 26.98761 -76.20001 151.7375 26.98761 76.2 151.7375 -26.98737 76.2 -220 -26.98737 91.12698 -220 26.98761 76.2 -220 -26.98737 76.2 -151.7375 26.98761 76.2 -91.12699 -26.98737 220 91.12699 -26.98737 220 220 26.98761 76.2 220 -26.98737 76.2 220 -26.98737 91.12698 220 26.98761 91.12698 -220 26.98761 91.12698 91.12699 26.98761 220 -91.12699 26.98761 220</float_array>
+          <technique_common>
+            <accessor source="#Octagonal_Base_001-mesh-positions-array" count="32" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <source id="Octagonal_Base_001-mesh-normals">
+          <float_array id="Octagonal_Base_001-mesh-normals-array" count="57">-0.7071067 0 -0.7071069 0 0 -1 0 -1 0 0 -1 0 0.7071068 0 -0.7071068 0.7071067 0 -0.7071069 0 -1 0 -1 0 0 -0.7071068 0 -0.7071068 1 0 0 0 0 1 0 -1 0 0 -1 0 -0.707107 0 0.7071067 0.7071067 0 0.7071069 0.7071069 0 0.7071067 -0.7071067 0 0.7071069 0 1 0 0 1 0</float_array>
+          <technique_common>
+            <accessor source="#Octagonal_Base_001-mesh-normals-array" count="19" stride="3">
+              <param name="X" type="float"/>
+              <param name="Y" type="float"/>
+              <param name="Z" type="float"/>
+            </accessor>
+          </technique_common>
+        </source>
+        <vertices id="Octagonal_Base_001-mesh-vertices">
+          <input semantic="POSITION" source="#Octagonal_Base_001-mesh-positions"/>
+        </vertices>
+        <triangles count="60">
+          <input semantic="VERTEX" source="#Octagonal_Base_001-mesh-vertices" offset="0"/>
+          <input semantic="NORMAL" source="#Octagonal_Base_001-mesh-normals" offset="1"/>
+          <p>0 0 1 0 2 0 3 1 4 1 2 1 1 1 3 1 2 1 5 2 0 2 2 2 4 3 5 3 2 3 6 4 7 4 4 4 3 5 6 5 4 5 7 3 8 3 4 3 8 6 9 6 4 6 9 3 5 3 4 3 10 7 11 7 0 7 11 8 1 8 0 8 5 3 10 3 0 3 12 9 8 9 7 9 6 9 12 9 7 9 5 10 13 10 10 10 13 7 11 7 10 7 14 7 15 7 5 7 15 10 13 10 5 10 9 3 14 3 5 3 8 10 16 10 9 10 17 9 18 9 9 9 16 9 17 9 9 9 18 3 14 3 9 3 12 10 16 10 8 10 19 7 20 7 21 7 22 1 14 1 21 1 20 1 22 1 21 1 23 3 19 3 21 3 14 11 23 11 21 11 22 7 15 7 14 7 24 3 23 3 14 3 18 3 24 3 14 3 25 1 26 1 18 1 17 1 25 1 18 1 26 3 27 3 18 3 27 12 24 12 18 12 28 9 27 9 26 9 25 9 28 9 26 9 23 13 29 13 19 13 29 7 20 7 19 7 30 14 24 14 27 14 28 15 30 15 27 15 24 10 31 10 23 10 31 16 29 16 23 16 30 10 31 10 24 10 16 17 3 17 1 17 11 17 13 17 1 17 13 17 15 17 1 17 15 17 16 17 1 17 16 17 6 17 3 17 16 17 12 17 6 17 22 17 16 17 15 17 22 17 17 17 16 17 29 17 22 17 20 17 29 17 31 17 22 17 31 17 17 17 22 17 30 17 25 17 17 17 31 18 30 18 17 18 30 17 28 17 25 17</p>
+        </triangles>
+      </mesh>
+    </geometry>
+  </library_geometries>
+  <library_controllers/>
+  <library_visual_scenes>
+    <visual_scene id="Scene" name="Scene">
+      <node id="Octagonal_Base" name="Octagonal_Base" type="NODE">
+        <matrix sid="transform">4.12611e-11 -4.12611e-11 -9.43944e-4 0 -9.43944e-4 0 -4.12611e-11 0 0 -9.43944e-4 4.12611e-11 0 0 0 0 1</matrix>
+        <instance_geometry url="#Octagonal_Base_001-mesh" name="Octagonal_Base"/>
+      </node>
+    </visual_scene>
+  </library_visual_scenes>
+  <scene>
+    <instance_visual_scene url="#Scene"/>
+  </scene>
+</COLLADA>
