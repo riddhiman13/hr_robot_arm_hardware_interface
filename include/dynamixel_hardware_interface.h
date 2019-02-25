@@ -156,7 +156,13 @@ private:
   transmission_interface::JointToActuatorPositionInterface* jnt_to_act_pos;
 
   // Joint Limits Interface
-  joint_limits_interface::JointLimits j_limits;
+  joint_limits_interface::JointLimits j_limits_0;
+  joint_limits_interface::JointLimits j_limits_1;
+  joint_limits_interface::JointLimits j_limits_2;
+  joint_limits_interface::JointLimits j_limits_3;
+  joint_limits_interface::JointLimits j_limits_4;
+  joint_limits_interface::JointLimits j_limits_5;
+  joint_limits_interface::JointLimits j_limits_6;
   joint_limits_interface::SoftJointLimits soft_limits;
   joint_limits_interface::PositionJointSoftLimitsInterface jnt_limits_interface_;
 

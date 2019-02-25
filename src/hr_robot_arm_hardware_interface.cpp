@@ -107,41 +107,38 @@ void DynamixelRobotHw::registerInterfaces() {
     ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
               "l_wrist_pitch_joint ");
 
-  // Should be in a yaml file
-  j_limits.has_velocity_limits = true;
-  j_limits.max_velocity = 2.0;
-
-  const bool urdf_limits_ok0 = getJointLimits(urdf_joint_0, j_limits);
-  const bool urdf_limits_ok1 = getJointLimits(urdf_joint_1, j_limits);
-  const bool urdf_limits_ok2 = getJointLimits(urdf_joint_2, j_limits);
-  const bool urdf_limits_ok3 = getJointLimits(urdf_joint_3, j_limits);
-  const bool urdf_limits_ok4 = getJointLimits(urdf_joint_4, j_limits);
-  const bool urdf_limits_ok5 = getJointLimits(urdf_joint_5, j_limits);
-  const bool urdf_limits_ok6 = getJointLimits(urdf_joint_6, j_limits);
+  const bool urdf_limits_ok0 = getJointLimits(urdf_joint_0, j_limits_0);
+  const bool urdf_limits_ok1 = getJointLimits(urdf_joint_1, j_limits_1);
+  const bool urdf_limits_ok2 = getJointLimits(urdf_joint_2, j_limits_2);
+  const bool urdf_limits_ok3 = getJointLimits(urdf_joint_3, j_limits_3);
+  const bool urdf_limits_ok4 = getJointLimits(urdf_joint_4, j_limits_4);
+  const bool urdf_limits_ok5 = getJointLimits(urdf_joint_5, j_limits_5);
+  const bool urdf_limits_ok6 = getJointLimits(urdf_joint_6, j_limits_6);
 
   if (urdf_limits_ok0 && urdf_limits_ok1 && urdf_limits_ok2 &&
       urdf_limits_ok3 && urdf_limits_ok4 && urdf_limits_ok5 &&
       urdf_limits_ok6 != 1)
     ROS_ERROR("Error loading the joint limits from URDF");
 
-  const bool urdf_soft_limits_ok0 = getSoftJointLimits(urdf_joint_0,
-  soft_limits);
-  const bool urdf_soft_limits_ok1 = getSoftJointLimits(urdf_joint_1,
-  soft_limits);
-  const bool urdf_soft_limits_ok2 = getSoftJointLimits(urdf_joint_2,
-  soft_limits);
-  const bool urdf_soft_limits_ok3 = getSoftJointLimits(urdf_joint_3,
-  soft_limits);
-  const bool urdf_soft_limits_ok4 = getSoftJointLimits(urdf_joint_4,
-  soft_limits);
-  const bool urdf_soft_limits_ok5 = getSoftJointLimits(urdf_joint_5,
-  soft_limits);
-  const bool urdf_soft_limits_ok6 = getSoftJointLimits(urdf_joint_6,
-  soft_limits);
+  const bool urdf_soft_limits_ok0 =
+      getSoftJointLimits(urdf_joint_0, soft_limits);
+  const bool urdf_soft_limits_ok1 =
+      getSoftJointLimits(urdf_joint_1, soft_limits);
+  const bool urdf_soft_limits_ok2 =
+      getSoftJointLimits(urdf_joint_2, soft_limits);
+  const bool urdf_soft_limits_ok3 =
+      getSoftJointLimits(urdf_joint_3, soft_limits);
+  const bool urdf_soft_limits_ok4 =
+      getSoftJointLimits(urdf_joint_4, soft_limits);
+  const bool urdf_soft_limits_ok5 =
+      getSoftJointLimits(urdf_joint_5, soft_limits);
+  const bool urdf_soft_limits_ok6 =
+      getSoftJointLimits(urdf_joint_6, soft_limits);
 
-  if (urdf_soft_limits_ok1 != 1)
+  if (urdf_soft_limits_ok0 && urdf_soft_limits_ok1 && urdf_soft_limits_ok2 &&
+      urdf_soft_limits_ok3 && urdf_soft_limits_ok4 && urdf_soft_limits_ok5 &&
+      urdf_soft_limits_ok6 != 1)
     ROS_ERROR("Error loading the soft joint limits from URDF");
-  // ROS_INFO_STREAM("urdf_soft_limits_ok: "<<urdf_soft_limits_ok);
 
   for (unsigned int i{0}; i < (sizeof(actuators) / sizeof(actuators[0])); ++i) {
     hardware_interface::ActuatorStateHandle actuator_state_handle(
@@ -300,10 +297,13 @@ void DynamixelRobotHw::write(const ros::Time &time,
                              const ros::Duration &period) {
   ROS_DEBUG_STREAM("write called");
 
+  // Enforcing joint limits for all the registered joint handles
   jnt_limits_interface_.enforceLimits(period);
+
   // Propagate the joint commands (positions) to actuators
   jnt_to_act_pos->propagate();
 
+  // Sending actuator command to the hardware
   bool addparam_result = false;
   int raw_value{0};
   int i{0};
@@ -359,6 +359,8 @@ double DynamixelRobotHw::mamps2Nm(int16_t dxl_present_current,
 void DynamixelRobotHw::read(const ros::Time &time,
                             const ros::Duration &period) {
   ROS_DEBUG_STREAM("read called");
+
+  //Reading actuator states from the hardware
   int status1 = group_sync_read_p->txRxPacket();
   int status2 = group_sync_read_v->txRxPacket();
   int status3 = group_sync_read_c->txRxPacket();
@@ -444,12 +446,43 @@ bool DynamixelRobotHw::init(ros::NodeHandle &root_nh,
 
   hardware_interface::PositionJointInterface *pos_jnt_iface =
       this->get<hardware_interface::PositionJointInterface>();
-  hardware_interface::JointHandle joint_handle =
+  hardware_interface::JointHandle joint_handle_0 =
       pos_jnt_iface->getHandle("l_shoulder_pitch_joint");
+  hardware_interface::JointHandle joint_handle_1 =
+      pos_jnt_iface->getHandle("l_shoulder_roll_joint");
+  hardware_interface::JointHandle joint_handle_2 =
+      pos_jnt_iface->getHandle("l_shoulder_yaw_joint");
+  hardware_interface::JointHandle joint_handle_3 =
+      pos_jnt_iface->getHandle("l_elbow_pitch_joint");
+  hardware_interface::JointHandle joint_handle_4 =
+      pos_jnt_iface->getHandle("l_wrist_yaw_joint");
+  hardware_interface::JointHandle joint_handle_5 =
+      pos_jnt_iface->getHandle("l_wrist_roll_joint");
+  hardware_interface::JointHandle joint_handle_6 =
+      pos_jnt_iface->getHandle("l_wrist_pitch_joint");
 
-  joint_limits_interface::PositionJointSoftLimitsHandle handle(
-      joint_handle, j_limits, soft_limits);
-  jnt_limits_interface_.registerHandle(handle);
+  joint_limits_interface::PositionJointSoftLimitsHandle handle0(
+      joint_handle_0, j_limits_0, soft_limits);
+  joint_limits_interface::PositionJointSoftLimitsHandle handle1(
+      joint_handle_1, j_limits_1, soft_limits);
+  joint_limits_interface::PositionJointSoftLimitsHandle handle2(
+      joint_handle_2, j_limits_2, soft_limits);
+  joint_limits_interface::PositionJointSoftLimitsHandle handle3(
+      joint_handle_3, j_limits_3, soft_limits);
+  joint_limits_interface::PositionJointSoftLimitsHandle handle4(
+      joint_handle_4, j_limits_4, soft_limits);
+  joint_limits_interface::PositionJointSoftLimitsHandle handle5(
+      joint_handle_5, j_limits_5, soft_limits);
+  joint_limits_interface::PositionJointSoftLimitsHandle handle6(
+      joint_handle_6, j_limits_6, soft_limits);
+
+  jnt_limits_interface_.registerHandle(handle0);
+  jnt_limits_interface_.registerHandle(handle1);
+  jnt_limits_interface_.registerHandle(handle2);
+  jnt_limits_interface_.registerHandle(handle3);
+  jnt_limits_interface_.registerHandle(handle4);
+  jnt_limits_interface_.registerHandle(handle5);
+  jnt_limits_interface_.registerHandle(handle6);
 
   return true;
 }
