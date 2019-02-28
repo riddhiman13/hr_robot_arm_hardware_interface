@@ -14,9 +14,8 @@ which currently uses Dynamixel servos
 #include "dynamixel_hardware_interface.h"
 // For the ros_control controller manager
 #include <controller_manager/controller_manager.h>
-#include <urdf/model.h>
-
 #include <stdexcept>
+#include <urdf/model.h>
 
 // NAMESPACES
 namespace hansonrobotics {
@@ -45,14 +44,14 @@ void DynamixelRobotHw::registerInterfaces() {
 
   // Reading the actuator names from the configuration file loaded in the
   // parameter server
-  XmlRpc::XmlRpcValue my_list;
+  XmlRpc::XmlRpcValue act_list;
   ros::NodeHandle nh;
-  nh.getParam("/actuators", my_list);
+  nh.getParam("/actuators", act_list);
 
-  std::string actuator_names[my_list.size()];
+  std::string actuator_names[act_list.size()];
 
-  for (int i = 0; i < my_list.size(); ++i) {
-    XmlRpc::XmlRpcValue sublist = my_list[i];
+  for (int i = 0; i < act_list.size(); ++i) {
+    XmlRpc::XmlRpcValue sublist = act_list[i];
     if (sublist["name"].size() > 0 && sublist["type"].size() > 0 &&
         sublist["model"].size() > 0) {
       std::string name = sublist["name"];
@@ -60,91 +59,11 @@ void DynamixelRobotHw::registerInterfaces() {
     }
   }
 
-  urdf::Model urdf;
-  if (!urdf.initParam("/robot_description"))
-    ROS_ERROR(
-        "DynamixelRobotHw::registerInterfaces: /robot_description missing.");
-
-  boost::shared_ptr<const urdf::Joint> urdf_joint_0 =
-      urdf.getJoint("l_shoulder_pitch_joint");
-  if (urdf_joint_0 == nullptr)
-    ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
-              "l_shoulder_pitch_joint ");
-
-  boost::shared_ptr<const urdf::Joint> urdf_joint_1 =
-      urdf.getJoint("l_shoulder_roll_joint");
-  if (urdf_joint_1 == nullptr)
-    ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
-              "l_shoulder_roll_joint ");
-
-  boost::shared_ptr<const urdf::Joint> urdf_joint_2 =
-      urdf.getJoint("l_shoulder_yaw_joint");
-  if (urdf_joint_0 == nullptr)
-    ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
-              "l_shoulder_yaw_joint ");
-
-  boost::shared_ptr<const urdf::Joint> urdf_joint_3 =
-      urdf.getJoint("l_elbow_pitch_joint");
-  if (urdf_joint_1 == nullptr)
-    ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
-              "l_elbow_pitch_joint ");
-
-  boost::shared_ptr<const urdf::Joint> urdf_joint_4 =
-      urdf.getJoint("l_wrist_yaw_joint");
-  if (urdf_joint_0 == nullptr)
-    ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
-              "l_wrist_yaw_joint ");
-
-  boost::shared_ptr<const urdf::Joint> urdf_joint_5 =
-      urdf.getJoint("l_wrist_roll_joint");
-  if (urdf_joint_1 == nullptr)
-    ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
-              "l_wrist_roll_joint ");
-
-  boost::shared_ptr<const urdf::Joint> urdf_joint_6 =
-      urdf.getJoint("l_wrist_pitch_joint");
-  if (urdf_joint_1 == nullptr)
-    ROS_ERROR("DynamixelRobotHw::registerInterfaces:: cannot load "
-              "l_wrist_pitch_joint ");
-
-  const bool urdf_limits_ok0 = getJointLimits(urdf_joint_0, j_limits_0);
-  const bool urdf_limits_ok1 = getJointLimits(urdf_joint_1, j_limits_1);
-  const bool urdf_limits_ok2 = getJointLimits(urdf_joint_2, j_limits_2);
-  const bool urdf_limits_ok3 = getJointLimits(urdf_joint_3, j_limits_3);
-  const bool urdf_limits_ok4 = getJointLimits(urdf_joint_4, j_limits_4);
-  const bool urdf_limits_ok5 = getJointLimits(urdf_joint_5, j_limits_5);
-  const bool urdf_limits_ok6 = getJointLimits(urdf_joint_6, j_limits_6);
-
-  if (urdf_limits_ok0 && urdf_limits_ok1 && urdf_limits_ok2 &&
-      urdf_limits_ok3 && urdf_limits_ok4 && urdf_limits_ok5 &&
-      urdf_limits_ok6 != 1)
-    ROS_ERROR("Error loading the joint limits from URDF");
-
-  const bool urdf_soft_limits_ok0 =
-      getSoftJointLimits(urdf_joint_0, soft_limits);
-  const bool urdf_soft_limits_ok1 =
-      getSoftJointLimits(urdf_joint_1, soft_limits);
-  const bool urdf_soft_limits_ok2 =
-      getSoftJointLimits(urdf_joint_2, soft_limits);
-  const bool urdf_soft_limits_ok3 =
-      getSoftJointLimits(urdf_joint_3, soft_limits);
-  const bool urdf_soft_limits_ok4 =
-      getSoftJointLimits(urdf_joint_4, soft_limits);
-  const bool urdf_soft_limits_ok5 =
-      getSoftJointLimits(urdf_joint_5, soft_limits);
-  const bool urdf_soft_limits_ok6 =
-      getSoftJointLimits(urdf_joint_6, soft_limits);
-
-  if (urdf_soft_limits_ok0 && urdf_soft_limits_ok1 && urdf_soft_limits_ok2 &&
-      urdf_soft_limits_ok3 && urdf_soft_limits_ok4 && urdf_soft_limits_ok5 &&
-      urdf_soft_limits_ok6 != 1)
-    ROS_ERROR("Error loading the soft joint limits from URDF");
-
   for (unsigned int i{0}; i < (sizeof(actuators) / sizeof(actuators[0])); ++i) {
     hardware_interface::ActuatorStateHandle actuator_state_handle(
         actuator_names[i], &actuators[i].position, &actuators[i].velocity,
         &actuators[i].effort);
-
+    ROS_INFO_STREAM("The Actuator is: " << actuator_names[i]);
     actuator_state_interface_.registerHandle(actuator_state_handle);
     hardware_interface::ActuatorHandle actuator_handle(
         actuator_state_handle, &actuators[i].position_command);
@@ -246,6 +165,50 @@ bool DynamixelRobotHw::addParams() {
   return dxl_addparam_result;
 }
 
+// Function for the joint limits interface
+bool DynamixelRobotHw::jointlimitsInterface() {
+
+  urdf::Model urdf;
+  if (!urdf.initParam("/robot_description"))
+    ROS_ERROR(
+        "DynamixelRobotHw::jointlimitsInterface: /robot_description missing.");
+
+  for (auto &joint : urdf.joints_) {
+    const auto name = joint.first;
+    ROS_INFO_STREAM("Joint name obtained from the URDF file: " << name);
+    boost::shared_ptr<const urdf::Joint> urdf_joint_0 = urdf.getJoint(name);
+    if (urdf_joint_0 == nullptr)
+      ROS_ERROR_STREAM("DynamixelRobotHw::jointlimitsInterface:: cannot load "
+                       << name);
+    ROS_INFO_STREAM("Joint type: " << joint.second->type);
+
+    // For revolute joints only
+    if (joint.second->type == 1) {
+      const bool urdf_limits_ok0 = getJointLimits(urdf_joint_0, j_limits_0);
+
+      if (urdf_limits_ok0 != 1)
+        ROS_ERROR("Error loading the joint limits from URDF");
+
+      const bool urdf_soft_limits_ok0 =
+          getSoftJointLimits(urdf_joint_0, soft_limits);
+
+      if (urdf_soft_limits_ok0 != 1)
+        ROS_ERROR("Error loading the soft joint limits from URDF");
+
+      hardware_interface::PositionJointInterface *pos_jnt_iface =
+          this->get<hardware_interface::PositionJointInterface>();
+
+      joint_handle_0 = pos_jnt_iface->getHandle(name);
+
+      joint_limits_interface::PositionJointSoftLimitsHandle handle0(
+          joint_handle_0, j_limits_0, soft_limits);
+
+      jnt_limits_interface_.registerHandle(handle0);
+    }
+  }
+  return true;
+}
+
 // Function for the transmission interface
 bool DynamixelRobotHw::transmissionInterface(ros::NodeHandle &robot_hw_nh) {
   // Initializing the transmission loader
@@ -286,10 +249,17 @@ bool DynamixelRobotHw::transmissionInterface(ros::NodeHandle &robot_hw_nh) {
 }
 
 // Function to convert from radians to dynamixel value
-double DynamixelRobotHw::rad2Value(double &position_command) {
-  const double constant1 = 0.0879;
-  const double constant2 = 0.0174533;
-  return ((position_command) / (constant1 * constant2));
+std::uint16_t DynamixelRobotHw::rad2Value(double position_command) {
+  const int dyna_max = 4096;
+  if (position_command < 0)
+    position_command = 2 * M_PI + position_command;
+
+  position_command = (dyna_max * position_command) / (2 * M_PI);
+
+  ROS_DEBUG("rad2Value: position_command : %f (should be between 0 and 4095)",
+            position_command);
+
+  return static_cast<std::uint16_t>(position_command);
 }
 
 // Function to propagate joint commands to the dynamixels
@@ -297,8 +267,18 @@ void DynamixelRobotHw::write(const ros::Time &time,
                              const ros::Duration &period) {
   ROS_DEBUG_STREAM("write called");
 
+  // ROS_DEBUG_STREAM(" (Before Enforcing Limits) In DynamixelRobotHw::write "
+  //                  "Command given for: "
+  //                  << actuator_handle.getName() << " is "
+  //                  << actuator_handle.getCommand());
+
   // Enforcing joint limits for all the registered joint handles
   jnt_limits_interface_.enforceLimits(period);
+
+  // ROS_DEBUG_STREAM(" (After Enforcing Limits) In DynamixelRobotHw::write "
+  //                  "Command given for: "
+  //                  << actuator_handle.getName() << " is "
+  //                  << actuator_handle.getCommand());
 
   // Propagate the joint commands (positions) to actuators
   jnt_to_act_pos->propagate();
@@ -309,7 +289,9 @@ void DynamixelRobotHw::write(const ros::Time &time,
   int i{0};
 
   for (auto id : params_.motor_ids) {
+
     raw_value = rad2Value(this->actuators[i].position_command);
+
     uint8_t param_goal_position[] = {
             [0] = DXL_LOBYTE(DXL_LOWORD(raw_value)),
             [1] = DXL_HIBYTE(DXL_LOWORD(raw_value)),
@@ -330,9 +312,18 @@ void DynamixelRobotHw::write(const ros::Time &time,
 
 // Function to convert from dynamixel value to radians
 double DynamixelRobotHw::value2Rad(int32_t &dxl_present_position) {
-  const double constant1 = 0.0879;
-  const double constant2 = 0.0174533;
-  return (dxl_present_position * constant1 * constant2);
+  ROS_DEBUG("value2Rad (read): %d", dxl_present_position);
+  constexpr int dyna_max = 4096;
+  constexpr int centre = dyna_max / 2;
+
+  double result = dxl_present_position;
+  if (dxl_present_position > centre)
+    result = -(dyna_max - result);
+
+  ROS_DEBUG("value2Rad (read) pre rad: %f", result);
+  result *= 2 * M_PI / dyna_max;
+  ROS_DEBUG("value2Rad (read) rad: %f", result);
+  return result;
 }
 
 // Function to convert from rpm to radians/sec
@@ -350,8 +341,14 @@ double DynamixelRobotHw::mamps2Nm(int16_t dxl_present_current,
   const double constant2 = 0.104719;
   const double constant3 = 3.36;
   const double efficiency = 0.2;
-  return ((dxl_present_current * dxl_present_voltage * constant3 * efficiency) /
-          (dxl_present_velocity * constant1 * constant2 * 1000));
+  double result =
+      ((dxl_present_current * dxl_present_voltage * constant3 * efficiency) /
+       (dxl_present_velocity * constant1 * constant2 * 1000));
+  if (result > 0) {
+    return result;
+  } else {
+    return 0;
+  }
 }
 
 // Function to read the values from the dynamixels and propagate them to the
@@ -360,7 +357,7 @@ void DynamixelRobotHw::read(const ros::Time &time,
                             const ros::Duration &period) {
   ROS_DEBUG_STREAM("read called");
 
-  //Reading actuator states from the hardware
+  // Reading actuator states from the hardware
   int status1 = group_sync_read_p->txRxPacket();
   int status2 = group_sync_read_v->txRxPacket();
   int status3 = group_sync_read_c->txRxPacket();
@@ -443,46 +440,8 @@ bool DynamixelRobotHw::init(ros::NodeHandle &root_nh,
   ROS_DEBUG("After addParams");
   transmissionInterface(robot_hw_nh);
   ROS_DEBUG("After transmission interface loader");
-
-  hardware_interface::PositionJointInterface *pos_jnt_iface =
-      this->get<hardware_interface::PositionJointInterface>();
-  hardware_interface::JointHandle joint_handle_0 =
-      pos_jnt_iface->getHandle("l_shoulder_pitch_joint");
-  hardware_interface::JointHandle joint_handle_1 =
-      pos_jnt_iface->getHandle("l_shoulder_roll_joint");
-  hardware_interface::JointHandle joint_handle_2 =
-      pos_jnt_iface->getHandle("l_shoulder_yaw_joint");
-  hardware_interface::JointHandle joint_handle_3 =
-      pos_jnt_iface->getHandle("l_elbow_pitch_joint");
-  hardware_interface::JointHandle joint_handle_4 =
-      pos_jnt_iface->getHandle("l_wrist_yaw_joint");
-  hardware_interface::JointHandle joint_handle_5 =
-      pos_jnt_iface->getHandle("l_wrist_roll_joint");
-  hardware_interface::JointHandle joint_handle_6 =
-      pos_jnt_iface->getHandle("l_wrist_pitch_joint");
-
-  joint_limits_interface::PositionJointSoftLimitsHandle handle0(
-      joint_handle_0, j_limits_0, soft_limits);
-  joint_limits_interface::PositionJointSoftLimitsHandle handle1(
-      joint_handle_1, j_limits_1, soft_limits);
-  joint_limits_interface::PositionJointSoftLimitsHandle handle2(
-      joint_handle_2, j_limits_2, soft_limits);
-  joint_limits_interface::PositionJointSoftLimitsHandle handle3(
-      joint_handle_3, j_limits_3, soft_limits);
-  joint_limits_interface::PositionJointSoftLimitsHandle handle4(
-      joint_handle_4, j_limits_4, soft_limits);
-  joint_limits_interface::PositionJointSoftLimitsHandle handle5(
-      joint_handle_5, j_limits_5, soft_limits);
-  joint_limits_interface::PositionJointSoftLimitsHandle handle6(
-      joint_handle_6, j_limits_6, soft_limits);
-
-  jnt_limits_interface_.registerHandle(handle0);
-  jnt_limits_interface_.registerHandle(handle1);
-  jnt_limits_interface_.registerHandle(handle2);
-  jnt_limits_interface_.registerHandle(handle3);
-  jnt_limits_interface_.registerHandle(handle4);
-  jnt_limits_interface_.registerHandle(handle5);
-  jnt_limits_interface_.registerHandle(handle6);
+  jointlimitsInterface();
+  ROS_DEBUG("After joint limits interface");
 
   return true;
 }

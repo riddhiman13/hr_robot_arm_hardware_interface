@@ -20,7 +20,7 @@
         <xacro:property name="shoulder_roll_max" value="${86 * deg_to_rad}"/>
 
         <xacro:property name="shoulder_yaw_x" value="${104.3 * mm_to_m}"/>
-        <xacro:property name="shoulder_yaw_z" value="${5.2 * mm_to_m}"/>
+        <xacro:property name="shoulder_yaw_z" value="${1.6 * mm_to_m}"/> <!-- changed from 5.2 -->
         <xacro:property name="shoulder_yaw_min" value="${-58 * deg_to_rad}"/><!-- switch -->
         <xacro:property name="shoulder_yaw_max" value="${59 * deg_to_rad}"/>
 

@@ -15,7 +15,7 @@
     <rosparam command="load" file="$(find hr_robot_arm_hardware_interface)/config/actuators.yaml"/>
 
     <!-- Load joint limits specification -->
-    <!-- <rosparam command="load" file="$(find hr_robot_arm_hardware_interface)/config/joint_limits.yaml"/> -->
+    <rosparam command="load" file="$(find hr_robot_arm_hardware_interface)/config/joint_limits.yaml"/>
 
     <!-- Spawn controllers -->
     <!-- <rosparam file="$(find hr_robot_arm_hardware_interface)/config/control.yaml" command="load"/> -->

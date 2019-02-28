@@ -61,6 +61,7 @@ struct DynamixelMotorControlParams
   {
   }
   std::vector<std::uint8_t> motor_ids;  // dynamixel ID's
+  std::vector<double> motor_translation;
   int baud_rate;                        // baud rate (1000000)
   std::string device_name;              // device name(/dev/tty/USB0)
 };
@@ -145,6 +146,8 @@ private:
   hardware_interface::VelocityJointInterface velocity_joint_interface_;
   hardware_interface::EffortJointInterface effort_joint_interface_;
 
+  hardware_interface::JointHandle joint_handle_0;
+
   // actuator state interface
   hardware_interface::ActuatorStateInterface actuator_state_interface_;
   hardware_interface::PositionActuatorInterface position_actuator_interface_;
@@ -157,12 +160,7 @@ private:
 
   // Joint Limits Interface
   joint_limits_interface::JointLimits j_limits_0;
-  joint_limits_interface::JointLimits j_limits_1;
-  joint_limits_interface::JointLimits j_limits_2;
-  joint_limits_interface::JointLimits j_limits_3;
-  joint_limits_interface::JointLimits j_limits_4;
-  joint_limits_interface::JointLimits j_limits_5;
-  joint_limits_interface::JointLimits j_limits_6;
+
   joint_limits_interface::SoftJointLimits soft_limits;
   joint_limits_interface::PositionJointSoftLimitsInterface jnt_limits_interface_;
 
@@ -181,6 +179,9 @@ private:
   // Function for adding paramter storage
   bool addParams();
 
+  // Function for the joint limits interface
+  bool jointlimitsInterface();
+
   // Function for the transmission interface
   bool transmissionInterface(ros::NodeHandle& robot_hw_nh);
 
@@ -191,7 +192,7 @@ private:
   void read(const ros::Time& time, const ros::Duration& period) override;
 
   // Function to convert from radians to dynamixel value
-  double rad2Value(double& joint_pos_cmds_);
+  std::uint16_t rad2Value(double joint_pos_cmds_);
 
   // Function to convert from dynamixel value to radians
   double value2Rad(int32_t& dxl_present_position);
