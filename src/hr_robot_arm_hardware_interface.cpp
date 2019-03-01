@@ -250,11 +250,14 @@ bool DynamixelRobotHw::transmissionInterface(ros::NodeHandle &robot_hw_nh) {
 
 // Function to convert from radians to dynamixel value
 std::uint16_t DynamixelRobotHw::rad2Value(double position_command) {
-  const int dyna_max = 4096;
-  if (position_command < 0)
-    position_command = 2 * M_PI + position_command;
+  constexpr int dyna_max = 4096;
+  constexpr float rad_to_encoder = dyna_max / (2 * M_PI);
+  constexpr int centre = dyna_max / 2;
 
-  position_command = (dyna_max * position_command) / (2 * M_PI);
+  position_command = centre + round(position_command * rad_to_encoder);
+
+  if (position_command > dyna_max)
+    position_command = dyna_max;
 
   ROS_DEBUG("rad2Value: position_command : %f (should be between 0 and 4095)",
             position_command);
@@ -267,18 +270,18 @@ void DynamixelRobotHw::write(const ros::Time &time,
                              const ros::Duration &period) {
   ROS_DEBUG_STREAM("write called");
 
-  // ROS_DEBUG_STREAM(" (Before Enforcing Limits) In DynamixelRobotHw::write "
-  //                  "Command given for: "
-  //                  << actuator_handle.getName() << " is "
-  //                  << actuator_handle.getCommand());
+  ROS_DEBUG_STREAM(" (Before Enforcing Limits) In DynamixelRobotHw::write "
+                   "Command given for: "
+                   << joint_handle_0.getName() << " is "
+                   << joint_handle_0.getCommand());
 
   // Enforcing joint limits for all the registered joint handles
   jnt_limits_interface_.enforceLimits(period);
 
-  // ROS_DEBUG_STREAM(" (After Enforcing Limits) In DynamixelRobotHw::write "
-  //                  "Command given for: "
-  //                  << actuator_handle.getName() << " is "
-  //                  << actuator_handle.getCommand());
+  ROS_DEBUG_STREAM(" (After Enforcing Limits) In DynamixelRobotHw::write "
+                   "Command given for: "
+                   << joint_handle_0.getName() << " is "
+                   << joint_handle_0.getCommand());
 
   // Propagate the joint commands (positions) to actuators
   jnt_to_act_pos->propagate();
@@ -315,14 +318,21 @@ double DynamixelRobotHw::value2Rad(int32_t &dxl_present_position) {
   ROS_DEBUG("value2Rad (read): %d", dxl_present_position);
   constexpr int dyna_max = 4096;
   constexpr int centre = dyna_max / 2;
+  constexpr float encoder_to_rad = (2 * M_PI) / dyna_max;
 
   double result = dxl_present_position;
-  if (dxl_present_position > centre)
-    result = -(dyna_max - result);
+  if (dxl_present_position <= centre)
+    result = (result - centre) * encoder_to_rad;
 
-  ROS_DEBUG("value2Rad (read) pre rad: %f", result);
-  result *= 2 * M_PI / dyna_max;
-  ROS_DEBUG("value2Rad (read) rad: %f", result);
+  if (dxl_present_position > centre)
+    result = (centre - result) * encoder_to_rad;
+
+  if (dxl_present_position > dyna_max) 
+    result = dyna_max * encoder_to_rad;
+
+  // ROS_DEBUG("value2Rad (read) pre rad: %f", result);
+  // result *= encoder_to_rad;
+  // ROS_DEBUG("value2Rad (read) rad: %f", result);
   return result;
 }
 

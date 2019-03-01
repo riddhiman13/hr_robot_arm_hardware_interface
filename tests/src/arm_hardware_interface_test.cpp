@@ -19,8 +19,13 @@ Test suite for the dynamixel hardware interface
 
 using namespace hansonrobotics::hardware::arm::dynamixels;
 
-TEST(ArmRosControl, testCase1)  // TODO: Mocking class for functional testing
-{
+// class DynamixelRobotHwTest : public ::testing::Test {
+// public:
+// DynamixelRobotHwTest():
+// private:
+// };
+
+TEST(ArmRosControl, testCase1) {
   DynamixelMotorControlParams params;
 
   DynamixelRobotHw robot_hw(params);
@@ -30,8 +35,7 @@ TEST(ArmRosControl, testCase1)  // TODO: Mocking class for functional testing
   EXPECT_EQ(params.device_name, "/dev/ttyUSB0");
 }
 
-TEST(ArmRosControl, testCase2)
-{
+TEST(ArmRosControl, testCase2) {
   DynamixelMotorControlParams params;
 
   DynamixelRobotHw robot_hw(params);
@@ -45,3 +49,8 @@ TEST(ArmRosControl, testCase2)
   EXPECT_EQ(robot_hw.group_sync_read_vol, nullptr);
 }
 
+int main(int argc, char* argv[])
+{
+  testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
